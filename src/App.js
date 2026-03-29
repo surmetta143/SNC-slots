@@ -84,73 +84,102 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <h1>SNC Software Solutions</h1>
-      <h2>Interview Slot Booking</h2>
+    <>
+      {/* 🔝 Top Header */}
+      <div className="top-bar">
+        <div className="left">
+          📞 Contact us for Testing Classes:
+          <a href="tel:8985256492"> 8985256492</a>
+        </div>
 
-      {/* Date */}
-      <input
-        type="date"
-        value={selectedDate}
-        onChange={(e) => {
-          setSelectedDate(e.target.value);
-          setSelectedSlot("");
-        }}
-      />
-
-      {/* Slots */}
-      <div className="slots">
-        {allSlots.map((slot, i) => (
-          <button
-            key={i}
-            disabled={bookedSlots.includes(slot)}
-            onClick={() => setSelectedSlot(slot)}
-            className={selectedSlot === slot ? "selected" : ""}
+        <div className="right">
+          <a
+            href="https://www.youtube.com/@SNCsoftwaresolutions-Testing"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            {slot} {bookedSlots.includes(slot) ? "(Booked)" : ""}
-          </button>
-        ))}
+            ▶ YouTube
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/suresh-metta-785689112/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+          LinkedIn
+          </a>
+        </div>
       </div>
 
-      {/* Form */}
-      <div className="form">
+      {/* Main Container */}
+      <div className="container">
+        <h1>SNC Software Solutions</h1>
+        <h2>Interview Slot Booking</h2>
+
+        {/* Date */}
         <input
-          placeholder="Enter Your Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          type="date"
+          value={selectedDate}
+          onChange={(e) => {
+            setSelectedDate(e.target.value);
+            setSelectedSlot("");
+          }}
         />
 
-        <input
-          placeholder="Enter Company - Round"
-          value={details}
-          onChange={(e) => setDetails(e.target.value)}
-        />
-
-        <button onClick={handleBooking}>Book Slot</button>
-      </div>
-
-      {/* Booking List */}
-      <div className="list">
-        <h3>Bookings ({selectedDate})</h3>
-
-        {bookings
-          .filter(b => b.date === selectedDate)
-          .map((b) => (
-            <div key={b.id} className="booking-item">
-              <span>
-                <strong>{b.slot}</strong> - {b.name} - {b.email}
-              </span>
-
-              <button
-                onClick={() => deleteBooking(b.id)}
-                className="delete-btn"
-              >
-                ❌
-              </button>
-            </div>
+        {/* Slots */}
+        <div className="slots">
+          {allSlots.map((slot, i) => (
+            <button
+              key={i}
+              disabled={bookedSlots.includes(slot)}
+              onClick={() => setSelectedSlot(slot)}
+              className={selectedSlot === slot ? "selected" : ""}
+            >
+              {slot} {bookedSlots.includes(slot) ? "(Booked)" : ""}
+            </button>
           ))}
+        </div>
+
+        {/* Form */}
+        <div className="form">
+          <input
+            placeholder="Enter Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <input
+            placeholder="Enter Company - Round"
+            value={details}
+            onChange={(e) => setDetails(e.target.value)}
+          />
+
+          <button onClick={handleBooking}>Book Slot</button>
+        </div>
+
+        {/* Booking List */}
+        <div className="list">
+          <h3>Bookings ({selectedDate})</h3>
+
+          {bookings
+            .filter(b => b.date === selectedDate)
+            .map((b) => (
+              <div key={b.id} className="booking-item">
+                <span>
+                  <strong>{b.slot}</strong> - {b.name} - {b.email}
+                </span>
+
+                <button
+                  onClick={() => deleteBooking(b.id)}
+                  className="delete-btn"
+                >
+                  ❌
+                </button>
+              </div>
+            ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
