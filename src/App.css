@@ -1,0 +1,25 @@
+.container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.slots button {
+  margin: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: green;
+  color: white;
+}
+
+.form input {
+  display: block;
+  margin: 10px auto;
+  padding: 8px;
+}
+
+.list {
+  margin-top: 20px;
+}
