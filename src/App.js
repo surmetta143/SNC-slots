@@ -113,13 +113,13 @@ function App() {
       {/* Form */}
       <div className="form">
         <input
-          placeholder="Enter Name"
+          placeholder="Enter Your Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
         <input
-          placeholder="Enter Email / Company / Round"
+          placeholder="Enter Company-Round Type"
           value={details}
           onChange={(e) => setDetails(e.target.value)}
         />
@@ -129,26 +129,16 @@ function App() {
 
       {/* Booking List */}
       <div className="list">
-        <h3>Bookings ({selectedDate})</h3>
+  <h3>Bookings ({selectedDate})</h3>
 
-        {bookings
-          .filter(b => b.date === selectedDate)
-          .map((b) => (
-            <div key={b.id} style={{ marginBottom: "10px" }}>
-              <strong>{b.slot}</strong> <br />
-              Name: {b.name} <br />
-              Details: {b.email}
-
-              {name === ADMIN_NAME && (
-                <div>
-                  <button onClick={() => deleteBooking(b.id)}>
-                    Delete
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+  {bookings
+    .filter(b => b.date === selectedDate)
+    .map((b) => (
+      <div key={b.id} style={{ marginBottom: "8px" }}>
+        <strong>{b.slot}</strong> → {b.name} - {b.email}
       </div>
+    ))}
+</div>
     </div>
   );
 }
