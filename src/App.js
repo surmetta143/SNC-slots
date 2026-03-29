@@ -8,7 +8,7 @@ function App() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
   const [name, setName] = useState("");
-  const [details, setDetails] = useState(""); // email / company details
+  const [details, setDetails] = useState("");
   const [bookings, setBookings] = useState([]);
 
   const allSlots = [
@@ -41,6 +41,8 @@ function App() {
       .filter(b => b.date === selectedDate)
       .map(b => b.slot);
   };
+
+  const bookedSlots = getBookedSlots();
 
   // ✅ Booking
   const handleBooking = async () => {
@@ -101,11 +103,11 @@ function App() {
         {allSlots.map((slot, i) => (
           <button
             key={i}
-            disabled={getBookedSlots().includes(slot)}
+            disabled={bookedSlots.includes(slot)}
             onClick={() => setSelectedSlot(slot)}
             className={selectedSlot === slot ? "selected" : ""}
           >
-            {slot} {getBookedSlots().includes(slot) ? "(Booked)" : ""}
+            {slot} {bookedSlots.includes(slot) ? "(Booked)" : ""}
           </button>
         ))}
       </div>
@@ -119,7 +121,7 @@ function App() {
         />
 
         <input
-          placeholder="Enter Company-Round Type"
+          placeholder="Enter Company - Round"
           value={details}
           onChange={(e) => setDetails(e.target.value)}
         />
@@ -129,16 +131,25 @@ function App() {
 
       {/* Booking List */}
       <div className="list">
-  <h3>Bookings ({selectedDate})</h3>
+        <h3>Bookings ({selectedDate})</h3>
 
-  {bookings
-    .filter(b => b.date === selectedDate)
-    .map((b) => (
-      <div key={b.id} style={{ marginBottom: "8px" }}>
-        <strong>{b.slot}</strong> → {b.name} - {b.email}
+        {bookings
+          .filter(b => b.date === selectedDate)
+          .map((b) => (
+            <div key={b.id} className="booking-item">
+              <span>
+                <strong>{b.slot}</strong> - {b.name} - {b.email}
+              </span>
+
+              <button
+                onClick={() => deleteBooking(b.id)}
+                className="delete-btn"
+              >
+                ❌
+              </button>
+            </div>
+          ))}
       </div>
-    ))}
-</div>
     </div>
   );
 }
