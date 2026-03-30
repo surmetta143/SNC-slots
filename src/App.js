@@ -5,8 +5,7 @@ import { supabase } from "./supabase";
 function App() {
   const ADMIN_NAME = "sureshmetta";
 
-  const [page, setPage] = useState("home"); // 🔥 navigation
-
+  const [page, setPage] = useState("home");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
   const [name, setName] = useState("");
@@ -75,39 +74,35 @@ function App() {
 
   return (
     <>
-      {/* 🔝 Header */}
+      {/* HEADER */}
       <div className="top-bar">
         <div className="left">
           📞 Contact: <a href="tel:8985256492">8985256492</a>
         </div>
 
         <div className="right">
-         <a 
-  href="https://www.youtube.com/@SNCsoftwaresolutions-Testing" 
-  target="_blank" 
-  rel="noreferrer"
->
-  ▶ YouTube
-</a>
+  <a href="https://www.youtube.com/@SNCsoftwaresolutions-Testing" target="_blank" rel="noreferrer">
+    ▶ YouTube
+  </a>
 
-<a 
-  href="https://www.linkedin.com/in/suresh-metta-785689112/" 
-  target="_blank" 
-  rel="noreferrer"
->
-  💼 LinkedIn
-</a>
-        </div>
+  <a href="https://www.linkedin.com/in/suresh-metta-785689112/" target="_blank" rel="noreferrer">
+    💼 LinkedIn
+  </a>
+
+  <button className="about-link" onClick={() => setPage("about")}>
+        ℹ About      
+  </button>
+</div>
       </div>
 
       <div className="container">
 
-        {/* 🏠 HOME PAGE */}
+        {/* HOME PAGE */}
         {page === "home" && (
           <>
             <h1>SNC Software Solutions</h1>
 
-            <div style={{ marginTop: "40px" }}>
+            <div className="home-buttons">
               <button className="main-btn" onClick={() => setPage("book")}>
                 📅 Book Your Interview Slot
               </button>
@@ -116,10 +111,69 @@ function App() {
                 📋 Check Scheduled Interviews
               </button>
             </div>
+
+            {/* 👇 FOUNDER SECTION ON HOME */}
+            <div className="about-section">
+              <h2>About SNC Software Solutions</h2>
+
+              <img
+                src="/myphoto.png"
+                alt="Suresh Metta"
+                className="founder-img"
+              />
+
+              <h3>Suresh Metta</h3>
+              <p className="role">Founder & CEO</p>
+
+              <p className="about-text">
+                I have 7+ years of experience in Software Testing (Manual + Automation).
+                I have trained more than <b>400+ students</b> and successfully helped
+                <b> 350+ candidates</b> to get placed in top companies.
+              </p>
+
+              <div className="skills">
+                <span>Java Automation</span>
+                <span>Python Automation</span>
+                <span>API Testing</span>
+                <span>Selenium WebDriver Automation</span>
+                <span>Playwright Automation</span>
+              </div>
+            </div>
           </>
         )}
 
-        {/* 📅 BOOK SLOT PAGE */}
+        {/* ABOUT PAGE */}
+        {page === "about" && (
+          <>
+            <button className="back-btn" onClick={() => setPage("home")}>
+              ⬅ Back
+            </button>
+
+            <h2>About SNC Software Solutions</h2>
+
+            <div className="about-section">
+              <img src="/myphoto.png" alt="Suresh Metta" className="founder-img" />
+
+              <h3>Suresh Metta</h3>
+              <p className="role">Founder & CEO</p>
+
+              <p className="about-text">
+                I have 7+ years of experience in Software Testing (Manual + Automation).
+                I have trained more than <b>400+ students</b> and successfully helped
+                <b> 350+ candidates</b> to get placed in top companies.
+              </p>
+
+              <div className="skills">
+                <span>Java Automation</span>
+                <span>Python Automation</span>
+                <span>API Testing</span>
+                <span>Selenium</span>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* BOOK PAGE */}
         {page === "book" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
@@ -168,7 +222,7 @@ function App() {
           </>
         )}
 
-        {/* 📋 VIEW PAGE */}
+        {/* VIEW PAGE */}
         {page === "view" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
