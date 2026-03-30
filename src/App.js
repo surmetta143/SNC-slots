@@ -82,8 +82,21 @@ function App() {
         </div>
 
         <div className="right">
-          <a href="https://www.youtube.com/@SNCsoftwaresolutions-Testing" target="_blank">▶ YouTube</a>
-          <a href="https://www.linkedin.com/in/suresh-metta-785689112/" target="_blank">💼 LinkedIn</a>
+         <a 
+  href="https://www.youtube.com/@SNCsoftwaresolutions-Testing" 
+  target="_blank" 
+  rel="noreferrer"
+>
+  ▶ YouTube
+</a>
+
+<a 
+  href="https://www.linkedin.com/in/suresh-metta-785689112/" 
+  target="_blank" 
+  rel="noreferrer"
+>
+  💼 LinkedIn
+</a>
         </div>
       </div>
 
