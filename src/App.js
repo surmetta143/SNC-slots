@@ -54,7 +54,7 @@ function App() {
     ]);
 
     if (!error) {
-      alert("Slot booked!");
+      alert("Congratulations, your Slot booked successfully!");
       fetchBookings();
       setSelectedSlot("");
       setName("");
