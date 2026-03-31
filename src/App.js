@@ -21,7 +21,7 @@ function App() {
     "06:30 PM","07:00 PM","07:30 PM","08:00 PM","08:30 PM","09:00 PM"
   ];
 
-  // Fetch bookings
+  // 🔥 Fetch bookings
   const fetchBookings = async () => {
     const { data, error } = await supabase.from("bookings").select("*");
     if (!error) setBookings(data);
@@ -39,7 +39,7 @@ function App() {
 
   const bookedSlots = getBookedSlots();
 
-  // Booking
+  // ✅ Booking
   const handleBooking = async () => {
     if (!selectedDate || !selectedSlot || !name || !details) {
       alert("Please fill all fields");
@@ -64,7 +64,7 @@ function App() {
     }
   };
 
-  // Delete
+  // ❌ Delete (Admin only)
   const deleteBooking = async (id) => {
     if (name !== ADMIN_NAME) {
       alert("Only admin can delete!");
@@ -83,23 +83,23 @@ function App() {
         </div>
 
         <div className="right">
-  <a href="https://www.youtube.com/@SNCsoftwaresolutions-Testing" target="_blank" rel="noreferrer">
-    ▶ YouTube
-  </a>
+          <a href="https://www.youtube.com/@SNCsoftwaresolutions-Testing" target="_blank" rel="noreferrer">
+            ▶ YouTube
+          </a>
 
-  <a href="https://www.linkedin.com/in/suresh-metta-785689112/" target="_blank" rel="noreferrer">
-    💼 LinkedIn
-  </a>
+          <a href="https://www.linkedin.com/in/suresh-metta-785689112/" target="_blank" rel="noreferrer">
+            💼 LinkedIn
+          </a>
 
-  <button className="about-link" onClick={() => setPage("about")}>
-        ℹ About      
-  </button>
-</div>
+          <button className="about-link" onClick={() => setPage("about")}>
+            ℹ About
+          </button>
+        </div>
       </div>
 
       <div className="container">
 
-        {/* HOME PAGE */}
+        {/* HOME */}
         {page === "home" && (
           <>
             <h1>SNC Software Solutions</h1>
@@ -114,37 +114,30 @@ function App() {
               </button>
             </div>
 
-            {/* 👇 FOUNDER SECTION ON HOME */}
             <div className="about-section">
               <h2>About SNC Software Solutions</h2>
 
-              <img
-                src="/myphoto.png"
-                alt="Suresh Metta"
-                className="founder-img"
-              />
+              <img src="/myphoto.png" alt="Suresh Metta" className="founder-img" />
 
               <h3>Suresh Metta</h3>
               <p className="role">Founder</p>
 
               <p className="about-text">
-                I have 7+ years of experience in Software Testing (Manual + Automation).
-                I have trained more than <b>400+ students</b> and successfully helped
-                <b> 350+ candidates</b> to get placed in top companies.
+                I have 7+ years of experience in Software Testing.
+                Trained <b>400+ students</b>, helped <b>350+ placements</b>.
               </p>
 
               <div className="skills">
                 <span>Java Automation</span>
                 <span>Python Automation</span>
                 <span>API Testing</span>
-                <span>Selenium WebDriver Automation</span>
-                <span>Playwright Automation</span>
+                <span>Playwright</span>
               </div>
             </div>
           </>
         )}
 
-        {/* ABOUT PAGE */}
+        {/* ABOUT */}
         {page === "about" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
@@ -160,22 +153,13 @@ function App() {
               <p className="role">Founder & CEO</p>
 
               <p className="about-text">
-                I have 7+ years of experience in Software Testing (Manual + Automation).
-                I have trained more than <b>400+ students</b> and successfully helped
-                <b> 350+ candidates</b> to get placed in top companies.
+                7+ years experience. 400+ students trained.
               </p>
-
-              <div className="skills">
-                <span>Java Automation</span>
-                <span>Python Automation</span>
-                <span>API Testing</span>
-                <span>Selenium</span>
-              </div>
             </div>
           </>
         )}
 
-        {/* BOOK PAGE */}
+        {/* BOOK */}
         {page === "book" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
@@ -185,22 +169,21 @@ function App() {
             <h2>Book Interview Slot</h2>
 
             <div className="date-field">
-  <label>First Select Date: </label>
-
-  <input
-    type="date"
-    value={selectedDate}
-    onChange={(e) => {
-      setSelectedDate(e.target.value);
-      setSelectedSlot("");
-    }}
-  />
-</div>
+              <label>Select Date: </label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => {
+                  setSelectedDate(e.target.value);
+                  setSelectedSlot("");
+                }}
+              />
+            </div>
 
             <div className="slots">
-              {allSlots.map((slot, i) => (
+              {allSlots.map((slot) => (
                 <button
-                  key={i}
+                  key={slot}
                   disabled={bookedSlots.includes(slot)}
                   onClick={() => setSelectedSlot(slot)}
                   className={selectedSlot === slot ? "selected" : ""}
@@ -212,13 +195,13 @@ function App() {
 
             <div className="form">
               <input
-                placeholder="Enter Your Name"
+                placeholder="Enter Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
 
               <input
-                placeholder="Enter Company - Round"
+                placeholder="Enter Company - Round (e.g. TCS-L1 / Selected)"
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
               />
@@ -228,7 +211,7 @@ function App() {
           </>
         )}
 
-        {/* VIEW PAGE */}
+        {/* VIEW */}
         {page === "view" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
@@ -238,35 +221,57 @@ function App() {
             <h2>Check Scheduled Interviews</h2>
 
             <div className="date-field">
-  <label>First Select Date: </label>
-
-  <input
-    type="date"
-    value={selectedDate}
-    onChange={(e) => setSelectedDate(e.target.value)}
-  />
-</div>
+              <label>Select Date: </label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+            </div>
 
             <div className="list">
-  {allSlots.map((slot) =>
-    bookings
-      .filter(b => b.date === selectedDate && b.slot === slot)
-      .map((b) => (
-        <div key={b.id} className="booking-item">
-          <span>
-            <strong>{b.slot}</strong> - {b.name} - {b.email}
-          </span>
+              <h3>Bookings ({selectedDate})</h3>
 
-          <button
-            onClick={() => deleteBooking(b.id)}
-            className="delete-btn"
-          >
-            ❌
-          </button>
-        </div>
-      ))
-  )}
-</div>
+              {allSlots.map((slot) =>
+                bookings
+                  .filter(b => b.date === selectedDate && b.slot === slot)
+                  .map((b) => {
+                    const isSelected = b.email?.toLowerCase().includes("selected");
+
+                    return (
+                      <div
+                        key={b.id}
+                        style={{
+                          marginBottom: "8px",
+                          padding: "6px",
+                          borderRadius: "5px",
+                          backgroundColor: isSelected ? "#22c55e" : "transparent",
+                          color: isSelected ? "white" : "black",
+                          fontWeight: isSelected ? "bold" : "normal"
+                        }}
+                      >
+                        <strong>{b.slot}</strong> - {b.name} - {b.email}
+
+                        {name === ADMIN_NAME && (
+                          <button
+                            onClick={() => deleteBooking(b.id)}
+                            style={{
+                              marginLeft: "10px",
+                              backgroundColor: "red",
+                              color: "white",
+                              border: "none",
+                              padding: "3px 6px",
+                              cursor: "pointer"
+                            }}
+                          >
+                            ✖
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })
+              )}
+            </div>
           </>
         )}
 
