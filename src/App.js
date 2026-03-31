@@ -201,7 +201,7 @@ function App() {
               />
 
               <input
-                placeholder="Enter Company - Round (e.g. TCS-L1 / Selected)"
+                placeholder="Enter Company - Round (e.g. TCS-L1 / Selected / Attended)"
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
               />
@@ -236,7 +236,25 @@ function App() {
                 bookings
                   .filter(b => b.date === selectedDate && b.slot === slot)
                   .map((b) => {
-                    const isSelected = b.email?.toLowerCase().includes("selected");
+
+                    const emailText = b.email?.toLowerCase() || "";
+
+                    const isSelected = emailText.includes("selected");
+                    const isAttended = emailText.includes("attended");
+
+                    let bgColor = "transparent";
+                    let textColor = "black";
+                    let fontWeight = "normal";
+
+                    if (isSelected) {
+                      bgColor = "#22c55e";
+                      textColor = "white";
+                      fontWeight = "bold";
+                    } else if (isAttended) {
+                      bgColor = "#facc15";
+                      textColor = "black";
+                      fontWeight = "bold";
+                    }
 
                     return (
                       <div
@@ -245,9 +263,9 @@ function App() {
                           marginBottom: "8px",
                           padding: "6px",
                           borderRadius: "5px",
-                          backgroundColor: isSelected ? "#22c55e" : "transparent",
-                          color: isSelected ? "white" : "black",
-                          fontWeight: isSelected ? "bold" : "normal"
+                          backgroundColor: bgColor,
+                          color: textColor,
+                          fontWeight: fontWeight
                         }}
                       >
                         <strong>{b.slot}</strong> - {b.name} - {b.email}
