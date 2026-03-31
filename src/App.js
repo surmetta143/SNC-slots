@@ -123,7 +123,7 @@ function App() {
               />
 
               <h3>Suresh Metta</h3>
-              <p className="role">Founder & CEO</p>
+              <p className="role">Founder</p>
 
               <p className="about-text">
                 I have 7+ years of experience in Software Testing (Manual + Automation).
