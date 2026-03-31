@@ -182,14 +182,18 @@ function App() {
 
             <h2>Book Interview Slot</h2>
 
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => {
-                setSelectedDate(e.target.value);
-                setSelectedSlot("");
-              }}
-            />
+            <div className="date-field">
+  <label>First Select Date: </label>
+
+  <input
+    type="date"
+    value={selectedDate}
+    onChange={(e) => {
+      setSelectedDate(e.target.value);
+      setSelectedSlot("");
+    }}
+  />
+</div>
 
             <div className="slots">
               {allSlots.map((slot, i) => (
@@ -231,11 +235,15 @@ function App() {
 
             <h2>Check Scheduled Interviews</h2>
 
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-            />
+            <div className="date-field">
+  <label>First Select Date: </label>
+
+  <input
+    type="date"
+    value={selectedDate}
+    onChange={(e) => setSelectedDate(e.target.value)}
+  />
+</div>
 
             <div className="list">
   {allSlots.map((slot) =>
