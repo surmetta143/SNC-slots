@@ -238,23 +238,25 @@ function App() {
             />
 
             <div className="list">
-              {bookings
-                .filter(b => b.date === selectedDate)
-                .map((b) => (
-                  <div key={b.id} className="booking-item">
-                    <span>
-                      <strong>{b.slot}</strong> - {b.name} - {b.email}
-                    </span>
+  {allSlots.map((slot) =>
+    bookings
+      .filter(b => b.date === selectedDate && b.slot === slot)
+      .map((b) => (
+        <div key={b.id} className="booking-item">
+          <span>
+            <strong>{b.slot}</strong> - {b.name} - {b.email}
+          </span>
 
-                    <button
-                      onClick={() => deleteBooking(b.id)}
-                      className="delete-btn"
-                    >
-                      ❌
-                    </button>
-                  </div>
-                ))}
-            </div>
+          <button
+            onClick={() => deleteBooking(b.id)}
+            className="delete-btn"
+          >
+            ❌
+          </button>
+        </div>
+      ))
+  )}
+</div>
           </>
         )}
 
