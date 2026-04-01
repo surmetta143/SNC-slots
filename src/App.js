@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { supabase } from "./supabase";
@@ -8,6 +9,15 @@ function App() {
   const [page, setPage] = useState("home");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
+
+  // ✅ NEW (Other Time)
+  const [customTime, setCustomTime] = useState("");
+  const [useCustomTime, setUseCustomTime] = useState(false);
+
+  // ✅ NEW (Repeat)
+  const [repeatType, setRepeatType] = useState("none");
+  const [repeatCount, setRepeatCount] = useState(1);
+
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [bookings, setBookings] = useState([]);
@@ -21,7 +31,6 @@ function App() {
     "06:30 PM","07:00 PM","07:30 PM","08:00 PM","08:30 PM","09:00 PM"
   ];
 
-  // 🔥 Fetch bookings
   const fetchBookings = async () => {
     const { data, error } = await supabase.from("bookings").select("*");
     if (!error) setBookings(data);
@@ -39,32 +48,52 @@ function App() {
 
   const bookedSlots = getBookedSlots();
 
-  // ✅ Booking
+  // ✅ UPDATED BOOKING
   const handleBooking = async () => {
-    if (!selectedDate || !selectedSlot || !name || !details) {
+    const finalSlot = useCustomTime ? customTime : selectedSlot;
+
+    if (!selectedDate || !finalSlot || !name || !details) {
       alert("Please fill all fields");
       return;
     }
 
-    const { error } = await supabase.from("bookings").insert([
-      {
-        date: selectedDate,
-        slot: selectedSlot,
+    const bookingsToInsert = [];
+    const baseDate = new Date(selectedDate);
+
+    const loopCount = repeatType === "none" ? 1 : repeatCount;
+
+    for (let i = 0; i < loopCount; i++) {
+      let newDate = new Date(baseDate);
+
+      if (repeatType === "daily") {
+        newDate.setDate(baseDate.getDate() + i);
+      } else if (repeatType === "weekly") {
+        newDate.setDate(baseDate.getDate() + i * 7);
+      }
+
+      bookingsToInsert.push({
+        date: newDate.toISOString().split("T")[0],
+        slot: finalSlot,
         name,
         email: details
-      }
-    ]);
+      });
+    }
+
+    const { error } = await supabase.from("bookings").insert(bookingsToInsert);
 
     if (!error) {
       alert("Congratulations, your Slot booked successfully!");
       fetchBookings();
       setSelectedSlot("");
+      setCustomTime("");
+      setUseCustomTime(false);
       setName("");
       setDetails("");
+      setRepeatType("none");
+      setRepeatCount(1);
     }
   };
 
-  // ❌ Delete (Admin only)
   const deleteBooking = async (id) => {
     if (name !== ADMIN_NAME) {
       alert("Only admin can delete!");
@@ -114,6 +143,7 @@ function App() {
               </button>
             </div>
 
+            {/* ✅ ABOUT (UNCHANGED) */}
             <div className="about-section">
               <h2>About SNC Software Solutions</h2>
 
@@ -137,7 +167,7 @@ function App() {
           </>
         )}
 
-        {/* ABOUT */}
+        {/* ABOUT PAGE (UNCHANGED) */}
         {page === "about" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
@@ -176,6 +206,7 @@ function App() {
                 onChange={(e) => {
                   setSelectedDate(e.target.value);
                   setSelectedSlot("");
+                  setUseCustomTime(false);
                 }}
               />
             </div>
@@ -185,13 +216,36 @@ function App() {
                 <button
                   key={slot}
                   disabled={bookedSlots.includes(slot)}
-                  onClick={() => setSelectedSlot(slot)}
+                  onClick={() => {
+                    setSelectedSlot(slot);
+                    setUseCustomTime(false);
+                  }}
                   className={selectedSlot === slot ? "selected" : ""}
                 >
                   {slot} {bookedSlots.includes(slot) ? "(Booked)" : ""}
                 </button>
               ))}
+
+              {/* ✅ Other Time */}
+              <button
+                onClick={() => {
+                  setUseCustomTime(true);
+                  setSelectedSlot("");
+                }}
+                className={useCustomTime ? "selected" : ""}
+              >
+                Other Time
+              </button>
             </div>
+
+            {useCustomTime && (
+              <input
+                type="time"
+                value={customTime}
+                onChange={(e) => setCustomTime(e.target.value)}
+                style={{ marginTop: "10px" }}
+              />
+            )}
 
             <div className="form">
               <input
@@ -206,12 +260,32 @@ function App() {
                 onChange={(e) => setDetails(e.target.value)}
               />
 
+              {/* ✅ Repeat */}
+              <div style={{ marginTop: "10px" }}>
+                <label>Repeat: </label>
+
+                <select onChange={(e) => setRepeatType(e.target.value)}>
+                  <option value="none">No Repeat</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                </select>
+
+                {repeatType !== "none" && (
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Count"
+                    onChange={(e) => setRepeatCount(Number(e.target.value))}
+                  />
+                )}
+              </div>
+
               <button onClick={handleBooking}>Book Slot</button>
             </div>
           </>
         )}
 
-        {/* VIEW */}
+        {/* VIEW (UNCHANGED) */}
         {page === "view" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
@@ -299,3 +373,4 @@ function App() {
 }
 
 export default App;
+
