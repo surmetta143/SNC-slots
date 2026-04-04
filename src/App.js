@@ -342,50 +342,57 @@ const [hrNumber, setHrNumber] = useState("");
                     let fontWeight = "normal";
 
                     if (isSelected) {
-                      bgColor = "#22c55e";
-                      textColor = "white";
-                      fontWeight = "bold";
-                    }else if (isCleared) {
-                       bgColor = "#2291c5";
-                      textColor = "black";
-                      fontWeight = "bold";
-                    } 
-                    else if (isAttended) {
-                      bgColor = "#facc15";
-                      textColor = "black";
-                      fontWeight = "bold";
-                    }
+  bgColor = "#22c55e"; // green
+  textColor = "white";
+  fontWeight = "bold";
+} else if (isCleared) {
+  bgColor = "#2291c5"; // blue
+  textColor = "black";
+  fontWeight = "bold";
+} else if (isAttended) {
+  bgColor = "#facc15"; // yellow
+  textColor = "black";
+  fontWeight = "bold";
+}
 
                     return (
                       <div
-                        key={b.id}
-                        style={{
-                          marginBottom: "8px",
-                          padding: "6px",
-                          borderRadius: "5px",
-                          backgroundColor: bgColor,
-                          color: textColor,
-                          fontWeight: fontWeight
-                        }}
-                      >
-                        <strong>{b.slot}</strong> - {b.name} - {b.email}
+  key={b.id}
+  style={{
+    marginBottom: "8px",
+    padding: "6px",
+    borderRadius: "5px"
+  }}
+>
+  <span
+    style={{
+      backgroundColor: bgColor,
+      color: textColor,
+      fontWeight: fontWeight,
+      padding: "4px 8px",
+      borderRadius: "6px",
+      display: "inline-block"
+    }}
+  >
+    <strong>{b.slot}</strong> - {b.name} - {b.email}
+  </span>
 
-                        {name === ADMIN_NAME && (
-                          <button
-                            onClick={() => deleteBooking(b.id)}
-                            style={{
-                              marginLeft: "10px",
-                              backgroundColor: "red",
-                              color: "white",
-                              border: "none",
-                              padding: "3px 6px",
-                              cursor: "pointer"
-                            }}
-                          >
-                            ✖
-                          </button>
-                        )}
-                      </div>
+  {name === ADMIN_NAME && (
+    <button
+      onClick={() => deleteBooking(b.id)}
+      style={{
+        marginLeft: "10px",
+        backgroundColor: "red",
+        color: "white",
+        border: "none",
+        padding: "3px 6px",
+        cursor: "pointer"
+      }}
+    >
+      ✖
+    </button>
+  )}
+</div>
                     );
                   })
               )}
