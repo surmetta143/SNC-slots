@@ -334,6 +334,8 @@ const [hrNumber, setHrNumber] = useState("");
 
                     const isSelected = emailText.includes("selected");
                     const isAttended = emailText.includes("attended");
+                    const isCleared = emailText.includes("3");
+                   
 
                     let bgColor = "transparent";
                     let textColor = "black";
@@ -343,7 +345,12 @@ const [hrNumber, setHrNumber] = useState("");
                       bgColor = "#22c55e";
                       textColor = "white";
                       fontWeight = "bold";
-                    } else if (isAttended) {
+                    }else if (isCleared) {
+                       bgColor = "#2291c5";
+                      textColor = "black";
+                      fontWeight = "bold";
+                    } 
+                    else if (isAttended) {
                       bgColor = "#facc15";
                       textColor = "black";
                       fontWeight = "bold";
