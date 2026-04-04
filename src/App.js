@@ -21,6 +21,8 @@ function App() {
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [bookings, setBookings] = useState([]);
+  const [email, setEmail] = useState("");
+const [hrNumber, setHrNumber] = useState("");
 
   const allSlots = [
     "09:00 AM","09:30 AM",
@@ -75,7 +77,9 @@ function App() {
         date: newDate.toISOString().split("T")[0],
         slot: finalSlot,
         name,
-        email: details
+        email: details,
+        emails:email,
+        phoneNumber:hrNumber
       });
     }
 
@@ -249,16 +253,31 @@ function App() {
 
             <div className="form">
               <input
-                placeholder="Enter Name"
+                placeholder="Enter Your Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-
+             
               <input
-                placeholder="Enter Company - Round (e.g. TCS-L1 / Selected / Attended)"
+                placeholder="CompanyName-RoundType(L1/L2)"
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
               />
+                <input
+    type="email"
+    placeholder="Enter Your Email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+  />
+
+
+
+              <input
+    type="tel"
+    placeholder="Enter HR Number"
+    value={hrNumber}
+    onChange={(e) => setHrNumber(e.target.value)}
+  />
 
               {/* ✅ Repeat */}
               <div style={{ marginTop: "10px" }}>
