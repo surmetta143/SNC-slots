@@ -340,6 +340,7 @@ function App() {
                     const isSelected = emailText.includes("selected");
                     const isAttended = emailText.includes("attended");
                     const isCleared = emailText.includes("3");
+                    const ispostponed = emailText.includes("postponed");
 
                     let bgColor = "transparent";
                     let textColor = "black";
@@ -351,6 +352,9 @@ function App() {
                       bgColor = "#2291c5"; textColor = "black"; fontWeight = "bold";
                     } else if (isAttended) {
                       bgColor = "#facc15"; textColor = "black"; fontWeight = "bold";
+                    }
+                     else if (ispostponed) {
+                      bgColor = "#151dfa"; textColor = "black"; fontWeight = "bold";
                     }
 
                     return (
