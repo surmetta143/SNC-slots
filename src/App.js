@@ -135,7 +135,10 @@ function App() {
             <h1>SNC Software Solutions</h1>
 
             <div className="home-buttons">
-             
+
+               <button className="main-btn" onClick={() => setPage("view")}>
+                📋 Book Your Interview Slot
+              </button>
               <button className="main-btn" onClick={() => setPage("view")}>
                 📋 Check Scheduled Interviews
               </button>
