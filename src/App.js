@@ -136,7 +136,7 @@ function App() {
 
             <div className="home-buttons">
               <button className="main-btn" onClick={() => setPage("book")}>
-                📅 Book Your Interview Slot
+                📅 Book\Ticket
               </button>
 
               <button className="main-btn" onClick={() => setPage("view")}>
@@ -354,7 +354,7 @@ function App() {
                       bgColor = "#facc15"; textColor = "black"; fontWeight = "bold";
                     }
                      else if (ispostponed) {
-                      bgColor = "#151dfa"; textColor = "black"; fontWeight = "bold";
+                      bgColor = "#a086860c"; textColor = "black"; fontWeight = "bold";
                     }
 
                     return (
