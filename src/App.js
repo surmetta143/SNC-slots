@@ -136,8 +136,7 @@ function App() {
 
             <div className="home-buttons">
               <button className="main-btn" onClick={() => setPage("book")}>
-                📅 Book\Ticket
-              </button>
+                📅 Book Your Interview Slot              </button>
 
               <button className="main-btn" onClick={() => setPage("view")}>
                 📋 Check Scheduled Interviews
