@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { supabase } from "./supabase";
@@ -8,22 +9,26 @@ function App() {
   const [page, setPage] = useState("home");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
+
+  // ✅ NEW (Other Time)
   const [customTime, setCustomTime] = useState("");
   const [useCustomTime, setUseCustomTime] = useState(false);
+
+  // ✅ NEW (Repeat)
   const [repeatType, setRepeatType] = useState("none");
   const [repeatCount, setRepeatCount] = useState(1);
 
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [bookings, setBookings] = useState([]);
-  const [email, setEmail] = useState("");
-  const [hrNumber, setHrNumber] = useState("");
 
   const allSlots = [
-    "09:00 AM","09:30 AM","10:00 AM","10:30 AM","11:00 AM","11:30 AM",
-    "12:00 PM","12:30 PM","01:00 PM","01:30 PM","02:00 PM","02:30 PM",
-    "03:00 PM","03:30 PM","04:00 PM","04:30 PM","05:00 PM","05:30 PM",
-    "06:00 PM","06:30 PM","07:00 PM","07:30 PM","08:00 PM","08:30 PM","09:00 PM"
+    "09:00 AM","09:30 AM",
+    "10:00 AM","10:30 AM","11:00 AM","11:30 AM",
+    "12:00 PM","12:30 PM","01:00 PM","01:30 PM",
+    "02:00 PM","02:30 PM","03:00 PM","03:30 PM",
+    "04:00 PM","04:30 PM","05:00 PM","05:30 PM","06:00 PM",
+    "06:30 PM","07:00 PM","07:30 PM","08:00 PM","08:30 PM","09:00 PM"
   ];
 
   const fetchBookings = async () => {
@@ -36,27 +41,25 @@ function App() {
   }, []);
 
   const getBookedSlots = () => {
-    return bookings.filter(b => b.date === selectedDate).map(b => b.slot);
+    return bookings
+      .filter(b => b.date === selectedDate)
+      .map(b => b.slot);
   };
 
   const bookedSlots = getBookedSlots();
 
+  // ✅ UPDATED BOOKING
   const handleBooking = async () => {
     const finalSlot = useCustomTime ? customTime : selectedSlot;
 
-    if (!selectedDate || !finalSlot || !name || !details || !email) {
+    if (!selectedDate || !finalSlot || !name || !details) {
       alert("Please fill all fields");
-      return;
-    }
-
-    // ✅ HR Number validation
-    if (!/^\d{10}$/.test(hrNumber)) {
-      alert("Please enter a valid 10-digit mobile number");
       return;
     }
 
     const bookingsToInsert = [];
     const baseDate = new Date(selectedDate);
+
     const loopCount = repeatType === "none" ? 1 : repeatCount;
 
     for (let i = 0; i < loopCount; i++) {
@@ -72,9 +75,7 @@ function App() {
         date: newDate.toISOString().split("T")[0],
         slot: finalSlot,
         name,
-        email: details,
-        emails: email,
-        phoneNumber: hrNumber
+        email: details
       });
     }
 
@@ -88,8 +89,6 @@ function App() {
       setUseCustomTime(false);
       setName("");
       setDetails("");
-      setEmail("");
-      setHrNumber("");
       setRepeatType("none");
       setRepeatCount(1);
     }
@@ -135,15 +134,16 @@ function App() {
             <h1>SNC Software Solutions</h1>
 
             <div className="home-buttons">
-
-               <button className="main-btn" onClick={() => setPage("view")}>
-                📋 Book Your Interview Slot
+              <button className="main-btn" onClick={() => setPage("book")}>
+                📅 Book Your Interview Slot
               </button>
+
               <button className="main-btn" onClick={() => setPage("view")}>
                 📋 Check Scheduled Interviews
               </button>
             </div>
 
+            {/* ✅ ABOUT (UNCHANGED) */}
             <div className="about-section">
               <h2>About SNC Software Solutions</h2>
 
@@ -167,7 +167,7 @@ function App() {
           </>
         )}
 
-        {/* ABOUT PAGE */}
+        {/* ABOUT PAGE (UNCHANGED) */}
         {page === "about" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
@@ -226,6 +226,7 @@ function App() {
                 </button>
               ))}
 
+              {/* ✅ Other Time */}
               <button
                 onClick={() => {
                   setUseCustomTime(true);
@@ -248,43 +249,18 @@ function App() {
 
             <div className="form">
               <input
-                placeholder="Enter Your Name"
+                placeholder="Enter Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-             
+
               <input
-                placeholder="CompanyName-RoundType(L1/L2)"
+                placeholder="Enter Company - Round (e.g. TCS-L1 / Selected / Attended)"
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
               />
 
-              <input
-                type="email"
-                placeholder="Enter Your Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-
-              <input
-                type="tel"
-                inputMode="numeric"
-                placeholder="Enter HR Number"
-                value={hrNumber}
-                maxLength={10}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    setHrNumber(value);
-                  }
-                }}
-              />
-              {hrNumber && hrNumber.length !== 10 && (
-                <p style={{ color: "red", margin: "4px 0 0" }}>
-                  Mobile number must be exactly 10 digits
-                </p>
-              )}
-
+              {/* ✅ Repeat */}
               <div style={{ marginTop: "10px" }}>
                 <label>Repeat: </label>
 
@@ -309,7 +285,7 @@ function App() {
           </>
         )}
 
-        {/* VIEW */}
+        {/* VIEW (UNCHANGED) */}
         {page === "view" && (
           <>
             <button className="back-btn" onClick={() => setPage("home")}>
@@ -339,41 +315,34 @@ function App() {
 
                     const isSelected = emailText.includes("selected");
                     const isAttended = emailText.includes("attended");
-                    const isCleared = emailText.includes("3");
-                    const ispostponed = emailText.includes("postponed");
 
                     let bgColor = "transparent";
                     let textColor = "black";
                     let fontWeight = "normal";
 
                     if (isSelected) {
-                      bgColor = "#22c55e"; textColor = "white"; fontWeight = "bold";
-                    } else if (isCleared) {
-                      bgColor = "#2291c5"; textColor = "black"; fontWeight = "bold";
+                      bgColor = "#22c55e";
+                      textColor = "white";
+                      fontWeight = "bold";
                     } else if (isAttended) {
-                      bgColor = "#facc15"; textColor = "black"; fontWeight = "bold";
-                    }
-                     else if (ispostponed) {
-                      bgColor = "#a086860c"; textColor = "black"; fontWeight = "bold";
+                      bgColor = "#facc15";
+                      textColor = "black";
+                      fontWeight = "bold";
                     }
 
                     return (
                       <div
                         key={b.id}
-                        style={{ marginBottom: "8px", padding: "6px", borderRadius: "5px" }}
+                        style={{
+                          marginBottom: "8px",
+                          padding: "6px",
+                          borderRadius: "5px",
+                          backgroundColor: bgColor,
+                          color: textColor,
+                          fontWeight: fontWeight
+                        }}
                       >
-                        <span
-                          style={{
-                            backgroundColor: bgColor,
-                            color: textColor,
-                            fontWeight: fontWeight,
-                            padding: "4px 8px",
-                            borderRadius: "6px",
-                            display: "inline-block"
-                          }}
-                        >
-                          <strong>{b.slot}</strong> - {b.name} - {b.email}
-                        </span>
+                        <strong>{b.slot}</strong> - {b.name} - {b.email}
 
                         {name === ADMIN_NAME && (
                           <button
@@ -397,9 +366,11 @@ function App() {
             </div>
           </>
         )}
+
       </div>
     </>
   );
 }
 
 export default App;
+
