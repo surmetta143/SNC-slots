@@ -31,12 +31,24 @@ function App() {
     email: "suresh@gmail.com"
   },
   {
+    name: "mmounika",
+    email: "mmounika@gmail.com"
+  },
+  {
+    name: "deepika",
+    email: "deepika@gmail.com"
+  },
+  {
+    name: "sridhar",
+    email: "sridhar@gmail.com"
+  },
+  {
     name: "sbegam",
     email: "ssbegam12@gmail.com"
   },
   {
-    name: "Anil",
-    email: "anil@gmail.com"
+    name: "jawhar",
+    email: "jawhar@gmail.com"
   }
 ];
 
