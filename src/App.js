@@ -66,6 +66,10 @@ function App() {
     {
     name: "siva kumar",
     email: "Shivadhunukunala9133@gmail.com"
+  },
+     {
+    name: "guravareddy",
+    email: "guravareddy@gmail.com"
   }
 ];
 
