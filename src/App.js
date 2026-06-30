@@ -38,6 +38,10 @@ function App() {
     name: "ravi",
     email: "ravi@gmail.com"
   },
+     {
+    name: "sampath",
+    email: "sampath@gmail.com"
+  },
   {
     name: "tirupathi",
     email: "tirupathi@gmail.com"
