@@ -51,7 +51,7 @@ function App() {
     email: "siva@gmail.com"
   },
       {
-    name: "rakesh",
+    name: "rathod",
     email: "rakesh@gmail.com"
   },
     
