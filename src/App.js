@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { supabase } from "./supabase";
 import { COURSES, COURSE_PRICE, UPI_ID } from "./courses";
@@ -146,13 +146,7 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchBookings();
-    fetchSuccessStories();
-    fetchPurchasedCourses();
-  }, []);
-
-  const fetchPurchasedCourses = async () => {
+  const fetchPurchasedCourses = useCallback(async () => {
     const { data, error } = await supabase
       .from("bookings")
       .select("*")
@@ -173,7 +167,13 @@ function App() {
       });
       setPurchasedCourses(purchases);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchBookings();
+    fetchSuccessStories();
+    fetchPurchasedCourses();
+  }, [fetchPurchasedCourses]);
 
   const getCoursePaymentStatus = (courseId, email) => {
     if (!email.trim()) return "none";
