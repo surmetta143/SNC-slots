@@ -947,7 +947,7 @@ function App() {
                   onChange={(e) => setStoryImage(e.target.files[0] || null)}
                 />
                 <input
-                  placeholder="Admin Name (sureshmetta)"
+                  placeholder="Admin"
                   value={storyAdminName}
                   onChange={(e) => setStoryAdminName(e.target.value)}
                 />
@@ -1139,7 +1139,7 @@ function App() {
             <div className="upload-section course-admin-section">
               <h3>Approve Course Payments (Admin)</h3>
               <input
-                placeholder="Admin Name (sureshmetta)"
+                placeholder="Admin"
                 value={courseAdminName}
                 onChange={(e) => setCourseAdminName(e.target.value)}
               />
