@@ -1029,6 +1029,7 @@ function App() {
             <h2>Online Courses</h2>
             <p className="home-subtitle">
               Enter your name and email, submit your payment details, and access the playlist after admin approval.
+              Name: Suresh Metta Phonepe/Gpay:8985256492
             </p>
 
             <div className="course-user-form">
