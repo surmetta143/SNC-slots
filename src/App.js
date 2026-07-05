@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { supabase } from "./supabase";
-import { COURSES, COURSE_PRICE, UPI_ID } from "./courses";
+import { COURSES, COURSE_PRICE } from "./courses";
 
 function App() {
   const ADMIN_NAME = "sureshmetta";
@@ -34,8 +34,7 @@ function App() {
   const [courseUserEmail, setCourseUserEmail] = useState("");
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [payingCourseId, setPayingCourseId] = useState("");
-  const [pendingCourse, setPendingCourse] = useState(null);
-  const [upiTransactionId, setUpiTransactionId] = useState("");
+  const [courseTransactionIds, setCourseTransactionIds] = useState({});
   const [courseAdminName, setCourseAdminName] = useState("");
 
   const parsePaymentStatus = (paymentRef) => {
@@ -175,19 +174,32 @@ function App() {
     fetchPurchasedCourses();
   }, [fetchPurchasedCourses]);
 
-  const getCoursePaymentStatus = (courseId, email) => {
-    if (!email.trim()) return "none";
+  const getCoursePaymentStatus = (courseId, email, userName = courseUserName) => {
+    if (!email.trim() || !userName.trim()) return "none";
     const normalizedEmail = email.toLowerCase().trim();
+    const normalizedName = userName.trim().toLowerCase();
     const record = purchasedCourses.find(
       (p) =>
         p.courseId === courseId &&
-        p.email?.toLowerCase().trim() === normalizedEmail
+        p.email?.toLowerCase().trim() === normalizedEmail &&
+        p.name?.trim().toLowerCase() === normalizedName
     );
     return record?.status || "none";
   };
 
-  const hasPurchasedCourse = (courseId, email) =>
-    getCoursePaymentStatus(courseId, email) === "approved";
+  const validateCourseUserDetails = () => {
+    if (!courseUserName.trim() || !courseUserEmail.trim()) {
+      alert("Please enter your name and email.");
+      return false;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courseUserEmail.trim())) {
+      alert("Please enter a valid email address.");
+      return false;
+    }
+
+    return true;
+  };
 
   const saveCoursePurchase = async (course, paymentId) => {
     const normalizedEmail = courseUserEmail.trim().toLowerCase();
@@ -265,32 +277,8 @@ function App() {
     (p) => p.status === "pending"
   );
 
-  const getUpiPaymentLink = (course) => {
-    const params = new URLSearchParams({
-      pa: UPI_ID,
-      pn: "SNC Software Solutions",
-      am: String(COURSE_PRICE),
-      cu: "INR",
-      tn: course.title.slice(0, 80),
-    });
-    return `upi://pay?${params.toString()}`;
-  };
-
-  const openUpiPayment = (course) => {
-    if (!courseUserName.trim() || !courseUserEmail.trim()) {
-      alert("Please enter your name and email before payment.");
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courseUserEmail.trim())) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-
-    if (hasPurchasedCourse(course.id, courseUserEmail)) {
-      window.open(course.playlistUrl, "_blank", "noopener,noreferrer");
-      return;
-    }
+  const submitCoursePayment = async (course) => {
+    if (!validateCourseUserDetails()) return;
 
     const paymentStatus = getCoursePaymentStatus(course.id, courseUserEmail);
     if (paymentStatus === "pending") {
@@ -298,37 +286,28 @@ function App() {
       return;
     }
 
-    if (paymentStatus === "rejected") {
-      alert("Your previous payment was rejected. Please contact admin or submit a new payment.");
-    }
-
-    setPendingCourse(course);
-    setUpiTransactionId("");
-  };
-
-  const confirmUpiPayment = async () => {
-    if (!pendingCourse) return;
-
-    if (!upiTransactionId.trim() || upiTransactionId.trim().length < 6) {
-      alert("Please enter a valid UPI transaction ID (at least 6 characters).");
+    if (paymentStatus === "approved") {
+      window.open(course.playlistUrl, "_blank", "noopener,noreferrer");
       return;
     }
 
-    setPayingCourseId(pendingCourse.id);
+    const transactionId = (courseTransactionIds[course.id] || "").trim();
+    if (!transactionId || transactionId.length < 6) {
+      alert("Please enter a valid payment transaction ID (at least 6 characters).");
+      return;
+    }
 
-    const saved = await saveCoursePurchase(
-      pendingCourse,
-      `UPI:${upiTransactionId.trim()}`
-    );
+    setPayingCourseId(course.id);
+
+    const saved = await saveCoursePurchase(course, transactionId);
 
     setPayingCourseId("");
 
     if (saved) {
       alert(
-        "Payment submitted! Admin will verify your UPI payment and approve access shortly."
+        "Payment submitted! Admin will verify and approve your course access shortly."
       );
-      setPendingCourse(null);
-      setUpiTransactionId("");
+      setCourseTransactionIds((prev) => ({ ...prev, [course.id]: "" }));
     }
   };
 
@@ -1049,12 +1028,8 @@ function App() {
           <div className="page-content">
             <h2>Online Courses</h2>
             <p className="home-subtitle">
-              Choose a course and pay ₹{COURSE_PRICE} via UPI to unlock the full YouTube playlist.
+              Enter your name and email, submit your payment details, and access the playlist after admin approval.
             </p>
-
-            <div className="upi-info">
-              <strong>UPI ID:</strong> {UPI_ID}
-            </div>
 
             <div className="course-user-form">
               <input
@@ -1069,6 +1044,9 @@ function App() {
                 onChange={(e) => setCourseUserEmail(e.target.value)}
               />
             </div>
+            <p className="course-access-note">
+              Use the same name and email here to check your course access or open approved playlists.
+            </p>
 
             <div className="courses-grid">
               {COURSES.map((course) => {
@@ -1100,7 +1078,7 @@ function App() {
                       <>
                         <span className="course-pending">Pending Admin Approval</span>
                         <p className="course-status-note">
-                          Payment submitted. You will get access after admin verifies your UPI payment.
+                          Payment submitted. Enter the same name and email after approval to watch the playlist.
                         </p>
                       </>
                     )}
@@ -1108,24 +1086,50 @@ function App() {
                     {paymentStatus === "rejected" && (
                       <>
                         <span className="course-rejected">Payment Rejected</span>
+                        <input
+                          type="text"
+                          className="course-txn-input"
+                          placeholder="Payment Transaction ID"
+                          value={courseTransactionIds[course.id] || ""}
+                          onChange={(e) =>
+                            setCourseTransactionIds((prev) => ({
+                              ...prev,
+                              [course.id]: e.target.value,
+                            }))
+                          }
+                        />
                         <button
                           className="main-btn course-btn"
-                          onClick={() => openUpiPayment(course)}
+                          onClick={() => submitCoursePayment(course)}
                           disabled={isPaying}
                         >
-                          {isPaying ? "Processing..." : `Pay ₹${COURSE_PRICE} Again`}
+                          {isPaying ? "Submitting..." : `Resubmit Payment (₹${COURSE_PRICE})`}
                         </button>
                       </>
                     )}
 
                     {paymentStatus === "none" && (
-                      <button
-                        className="main-btn course-btn"
-                        onClick={() => openUpiPayment(course)}
-                        disabled={isPaying}
-                      >
-                        {isPaying ? "Processing..." : `Pay ₹${COURSE_PRICE} via UPI`}
-                      </button>
+                      <>
+                        <input
+                          type="text"
+                          className="course-txn-input"
+                          placeholder="Payment Transaction ID"
+                          value={courseTransactionIds[course.id] || ""}
+                          onChange={(e) =>
+                            setCourseTransactionIds((prev) => ({
+                              ...prev,
+                              [course.id]: e.target.value,
+                            }))
+                          }
+                        />
+                        <button
+                          className="main-btn course-btn"
+                          onClick={() => submitCoursePayment(course)}
+                          disabled={isPaying}
+                        >
+                          {isPaying ? "Submitting..." : `Submit Payment (₹${COURSE_PRICE})`}
+                        </button>
+                      </>
                     )}
                   </div>
                 );
@@ -1176,67 +1180,8 @@ function App() {
             </div>
 
             <p className="course-note">
-              Pay ₹{COURSE_PRICE} to {UPI_ID} via PhonePe, GPay, or Paytm. After payment, enter your UPI transaction ID. Admin will verify and approve your course access.
+              Pay ₹{COURSE_PRICE} to the admin, enter your payment transaction ID on the course card, and wait for approval. Once approved, enter the same name and email to open the playlist.
             </p>
-
-            {pendingCourse && (
-              <div
-                className="story-modal-overlay"
-                onClick={() => setPendingCourse(null)}
-              >
-                <div
-                  className="upi-modal"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    className="story-modal-close"
-                    onClick={() => setPendingCourse(null)}
-                  >
-                    ✕
-                  </button>
-
-                  <h3>Pay ₹{COURSE_PRICE} via UPI</h3>
-                  <p className="upi-course-name">{pendingCourse.title}</p>
-
-                  <div className="upi-details">
-                    <p><strong>UPI ID:</strong> {UPI_ID}</p>
-                    <p><strong>Amount:</strong> ₹{COURSE_PRICE}</p>
-                  </div>
-
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(getUpiPaymentLink(pendingCourse))}`}
-                    alt="UPI QR Code"
-                    className="upi-qr"
-                  />
-
-                  <a
-                    href={getUpiPaymentLink(pendingCourse)}
-                    className="main-btn upi-pay-link"
-                  >
-                    Open UPI App to Pay
-                  </a>
-
-                  <div className="upi-confirm">
-                    <label>Enter UPI Transaction ID after payment:</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 123456789012"
-                      value={upiTransactionId}
-                      onChange={(e) => setUpiTransactionId(e.target.value)}
-                    />
-                    <button
-                      className="main-btn course-btn"
-                      onClick={confirmUpiPayment}
-                      disabled={payingCourseId === pendingCourse.id}
-                    >
-                      {payingCourseId === pendingCourse.id
-                        ? "Submitting..."
-                        : "Submit for Admin Approval"}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
