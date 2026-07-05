@@ -571,8 +571,6 @@ function App() {
   const navTabs = [
     { id: "home", label: "Home" },
     { id: "about", label: "About" },
-    { id: "book", label: "Book Your Interview Slot" },
-    { id: "view", label: "Check Scheduled Interviews" },
     { id: "success", label: "Success Stories" },
     { id: "courses", label: "Courses" },
   ];
