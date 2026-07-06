@@ -660,7 +660,7 @@ function App() {
 
               <p className="about-text">
                 I have 7+ years of experience in Software Testing.
-                Trained <b>1k+ students</b>, helped <b>500+ placements</b>.
+                Trained <b>1k+ students</b>, helped in <b>500+ placements</b>.
               </p>
 
               <div className="skills">
