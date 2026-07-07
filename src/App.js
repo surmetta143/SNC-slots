@@ -401,25 +401,79 @@ function App() {
     fetchBookings();
   };
 
-  const getBookingStatus = (detailsText) => {
+  const BOOKING_STATUS_OPTIONS = [
+    { value: "scheduled", label: "Scheduled" },
+    { value: "attended", label: "Attended" },
+    { value: "rescheduled", label: "Rescheduled" },
+    { value: "link not received", label: "Link not received" },
+    { value: "selected", label: "Selected" },
+    { value: "cleared", label: "Cleared" },
+    { value: "postponed", label: "Postponed" },
+  ];
+
+  const DETAILS_STATUS_SEPARATOR = " -- ";
+
+  const getLegacyBookingStatus = (detailsText) => {
     const text = detailsText?.toLowerCase() || "";
     if (text.includes("selected")) return "selected";
     if (text.includes("attended")) return "attended";
+    if (text.includes("rescheduled")) return "rescheduled";
+    if (text.includes("link not received")) return "link not received";
     if (text.includes("3")) return "cleared";
     if (text.includes("postponed")) return "postponed";
     return "scheduled";
   };
 
-  const getBookingStyle = (detailsText) => {
-    const status = getBookingStatus(detailsText);
+  const parseBookingDetails = (detailsText) => {
+    const text = (detailsText || "").trim();
+    const sepIndex = text.lastIndexOf(DETAILS_STATUS_SEPARATOR);
+
+    if (sepIndex !== -1) {
+      const company = text.slice(0, sepIndex).trim();
+      const explicitStatus = text
+        .slice(sepIndex + DETAILS_STATUS_SEPARATOR.length)
+        .trim()
+        .toLowerCase();
+      const knownStatuses = BOOKING_STATUS_OPTIONS.map((option) => option.value);
+
+      if (knownStatuses.includes(explicitStatus)) {
+        return { company, status: explicitStatus };
+      }
+    }
+
+    return { company: text, status: getLegacyBookingStatus(text) };
+  };
+
+  const formatBookingDetails = (company, status) => {
+    if (!status || status === "scheduled") return company;
+    return `${company}${DETAILS_STATUS_SEPARATOR}${status}`;
+  };
+
+  const getBookingStyle = (status) => {
     const styles = {
       selected: { bgColor: "#22c55e", textColor: "white", fontWeight: "bold" },
       cleared: { bgColor: "#2291c5", textColor: "black", fontWeight: "bold" },
       attended: { bgColor: "#facc15", textColor: "black", fontWeight: "bold" },
+      rescheduled: { bgColor: "#e9d5ff", textColor: "black", fontWeight: "bold" },
+      "link not received": { bgColor: "#fecaca", textColor: "#991b1b", fontWeight: "bold" },
       postponed: { bgColor: "#a086860c", textColor: "black", fontWeight: "bold" },
       scheduled: { bgColor: "transparent", textColor: "black", fontWeight: "normal" },
     };
-    return styles[status];
+    return styles[status] || styles.scheduled;
+  };
+
+  const updateBookingStatus = async (id, company, newStatus) => {
+    const { error } = await supabase
+      .from("bookings")
+      .update({ email: formatBookingDetails(company, newStatus) })
+      .eq("id", id);
+
+    if (error) {
+      alert(`Could not update status: ${error.message}`);
+      return;
+    }
+
+    fetchBookings();
   };
 
   const matchesCandidate = (bookingName, searchTerm) => {
@@ -435,6 +489,8 @@ function App() {
     const stats = {
       total: candidateBookings.length,
       attended: 0,
+      rescheduled: 0,
+      "link not received": 0,
       selected: 0,
       cleared: 0,
       postponed: 0,
@@ -442,15 +498,21 @@ function App() {
     };
 
     candidateBookings.forEach((b) => {
-      const status = getBookingStatus(b.email);
-      stats[status]++;
+      const { status } = parseBookingDetails(b.email);
+      if (stats[status] !== undefined) {
+        stats[status]++;
+      }
     });
 
     return stats;
   };
 
   const renderBookingRow = (b, showDate = false) => {
-    const { bgColor, textColor, fontWeight } = getBookingStyle(b.email);
+    const { company, status } = parseBookingDetails(b.email);
+    const { bgColor, textColor, fontWeight } = getBookingStyle(status);
+    const statusLabel =
+      BOOKING_STATUS_OPTIONS.find((option) => option.value === status)?.label ||
+      "Scheduled";
 
     return (
       <div key={b.id} className="booking-row">
@@ -464,8 +526,23 @@ function App() {
         >
           {showDate && <strong>{b.date}</strong>}
           {showDate && " | "}
-          <strong>{b.slot}</strong> - {b.name} - {b.email}
+          <strong>{b.slot}</strong> - {b.name} - {company}
         </span>
+
+        <span className="booking-status-label">-- {statusLabel}</span>
+
+        <select
+          className="booking-status-select"
+          value={status}
+          onChange={(e) => updateBookingStatus(b.id, company, e.target.value)}
+          aria-label={`Update status for ${b.name}`}
+        >
+          {BOOKING_STATUS_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
 
         {name === ADMIN_NAME && (
           <button
@@ -843,6 +920,14 @@ function App() {
                       <div className="stat-card attended">
                         <span className="stat-value">{stats.attended}</span>
                         <span className="stat-label">Attended</span>
+                      </div>
+                      <div className="stat-card rescheduled">
+                        <span className="stat-value">{stats.rescheduled}</span>
+                        <span className="stat-label">Rescheduled</span>
+                      </div>
+                      <div className="stat-card link-not-received">
+                        <span className="stat-value">{stats["link not received"]}</span>
+                        <span className="stat-label">Link not received</span>
                       </div>
                       <div className="stat-card selected">
                         <span className="stat-value">{stats.selected}</span>
