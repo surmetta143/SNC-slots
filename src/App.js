@@ -22,6 +22,7 @@ function App() {
   const [email, setEmail] = useState("");
   const [hrNumber, setHrNumber] = useState("");
   const [candidateSearch, setCandidateSearch] = useState("");
+  const [viewAdminName, setViewAdminName] = useState("");
   const [successStories, setSuccessStories] = useState([]);
   const [storyStudentName, setStoryStudentName] = useState("");
   const [storyCompany, setStoryCompany] = useState("");
@@ -393,8 +394,8 @@ function App() {
 };
 
   const deleteBooking = async (id) => {
-    if (name !== ADMIN_NAME) {
-      alert("Only admin can delete!");
+    if (viewAdminName !== ADMIN_NAME) {
+      alert("Only admin can delete! Enter admin name above.");
       return;
     }
     await supabase.from("bookings").delete().eq("id", id);
@@ -463,6 +464,11 @@ function App() {
   };
 
   const updateBookingStatus = async (id, company, newStatus) => {
+    if (viewAdminName !== ADMIN_NAME) {
+      alert("Only admin can edit status! Enter admin name above.");
+      return;
+    }
+
     const { error } = await supabase
       .from("bookings")
       .update({ email: formatBookingDetails(company, newStatus) })
@@ -474,6 +480,63 @@ function App() {
     }
 
     fetchBookings();
+  };
+
+  const updateBookingName = async (id, newName) => {
+    if (viewAdminName !== ADMIN_NAME) {
+      alert("Only admin can edit! Enter admin name above.");
+      return;
+    }
+
+    const trimmedName = newName.trim();
+    if (!trimmedName) {
+      alert("Name cannot be empty.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("bookings")
+      .update({ name: trimmedName })
+      .eq("id", id);
+
+    if (error) {
+      alert(`Could not update name: ${error.message}`);
+      return;
+    }
+
+    fetchBookings();
+  };
+
+  const updateBookingCompany = async (id, newCompany, status) => {
+    if (viewAdminName !== ADMIN_NAME) {
+      alert("Only admin can edit! Enter admin name above.");
+      return;
+    }
+
+    const trimmedCompany = newCompany.trim();
+    if (!trimmedCompany) {
+      alert("Company/details cannot be empty.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("bookings")
+      .update({ email: formatBookingDetails(trimmedCompany, status) })
+      .eq("id", id);
+
+    if (error) {
+      alert(`Could not update details: ${error.message}`);
+      return;
+    }
+
+    fetchBookings();
+  };
+
+  const saveBookingFieldOnBlur = (currentValue, newValue, saveFn) => {
+    const trimmed = newValue.trim();
+    if (trimmed && trimmed !== currentValue.trim()) {
+      saveFn(trimmed);
+    }
   };
 
   const matchesCandidate = (bookingName, searchTerm) => {
@@ -514,6 +577,8 @@ function App() {
       BOOKING_STATUS_OPTIONS.find((option) => option.value === status)?.label ||
       "Scheduled";
 
+    const isAdmin = viewAdminName === ADMIN_NAME;
+
     return (
       <div key={b.id} className="booking-row">
         <span
@@ -526,25 +591,62 @@ function App() {
         >
           {showDate && <strong>{b.date}</strong>}
           {showDate && " | "}
-          <strong>{b.slot}</strong> - {b.name} - {company}
+          <strong>{b.slot}</strong> -{" "}
+          {isAdmin ? (
+            <>
+              <input
+                className="booking-edit-input"
+                defaultValue={b.name}
+                onBlur={(e) =>
+                  saveBookingFieldOnBlur(b.name, e.target.value, (value) =>
+                    updateBookingName(b.id, value)
+                  )
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") e.target.blur();
+                }}
+                aria-label={`Edit name for ${b.slot}`}
+              />
+              {" - "}
+              <input
+                className="booking-edit-input booking-company-input"
+                defaultValue={company}
+                onBlur={(e) =>
+                  saveBookingFieldOnBlur(company, e.target.value, (value) =>
+                    updateBookingCompany(b.id, value, status)
+                  )
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") e.target.blur();
+                }}
+                aria-label={`Edit company for ${b.name}`}
+              />
+            </>
+          ) : (
+            <>
+              {b.name} - {company}
+            </>
+          )}
         </span>
 
         <span className="booking-status-label">-- {statusLabel}</span>
 
-        <select
-          className="booking-status-select"
-          value={status}
-          onChange={(e) => updateBookingStatus(b.id, company, e.target.value)}
-          aria-label={`Update status for ${b.name}`}
-        >
-          {BOOKING_STATUS_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        {isAdmin && (
+          <select
+            className="booking-status-select"
+            value={status}
+            onChange={(e) => updateBookingStatus(b.id, company, e.target.value)}
+            aria-label={`Update status for ${b.name}`}
+          >
+            {BOOKING_STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        )}
 
-        {name === ADMIN_NAME && (
+        {isAdmin && (
           <button
             className="delete-booking-btn"
             onClick={() => deleteBooking(b.id)}
@@ -631,6 +733,7 @@ function App() {
   const navTabs = [
     { id: "home", label: "Home" },
     { id: "about", label: "About" },
+    { id: "enroll", label: "Enroll Testing Course" },
     { id: "success", label: "Success Stories" },
     { id: "courses", label: "Courses" },
   ];
@@ -755,6 +858,102 @@ function App() {
               >
                 Connect on LinkedIn
               </a>
+            </div>
+          </div>
+        )}
+
+        {/* ENROLL TESTING COURSE */}
+        {page === "enroll" && (
+          <div className="page-content enroll-page">
+            <h2>Enroll Testing Course</h2>
+            <p className="home-subtitle">
+              Start your software testing career with hands-on training, real project
+              experience, and interview support from industry experts.
+            </p>
+
+            <div className="enroll-hero">
+              <h3>Why Choose SNC Software Testing Training?</h3>
+              <p>
+                Software testing is one of the best career options for people who want to
+                enter IT — especially if you are from a non-IT background or a fresher
+                looking for your first job. Our training is designed to help you learn
+                practically, build confidence, and move toward placements faster.
+              </p>
+            </div>
+
+            <div className="enroll-benefits">
+              <div className="enroll-card">
+                <h4>Practical Training</h4>
+                <p>
+                  Learn with real-time project work, not just theory. You will practice
+                  manual testing, automation basics, and tools used in real companies.
+                </p>
+              </div>
+              <div className="enroll-card">
+                <h4>Interview Support</h4>
+                <p>
+                  Get mock interviews, resume guidance, and interview scheduling support
+                  so you are fully prepared when opportunities come.
+                </p>
+              </div>
+              <div className="enroll-card">
+                <h4>Career Growth</h4>
+                <p>
+                  We guide you on how to grow in QA — from fresher to experienced tester —
+                  with the skills companies actually look for.
+                </p>
+              </div>
+              <div className="enroll-card">
+                <h4>Placement Track Record</h4>
+                <p>
+                  Trained 1,000+ students with 500+ placements. Our success stories show
+                  how candidates switched careers and got jobs in top companies.
+                </p>
+              </div>
+            </div>
+
+            <div className="enroll-audience">
+              <h3>Who Can Attend Our Training?</h3>
+              <ul className="enroll-list">
+                <li>
+                  <strong>Non-IT professionals</strong> who want to switch their career
+                  into software testing — this is one of the best and easiest paths into IT.
+                </li>
+                <li>
+                  <strong>Freshers</strong> who are searching for jobs and need practical
+                  skills plus interview support to get placed faster.
+                </li>
+                <li>
+                  <strong>Career gap candidates</strong> who want to restart their career
+                  with updated testing skills and real project exposure.
+                </li>
+                <li>
+                  <strong>Working professionals</strong> who want to upskill in automation,
+                  API testing, or move into better QA roles.
+                </li>
+              </ul>
+            </div>
+
+            <div className="enroll-highlights">
+              <h3>What You Will Get</h3>
+              <div className="enroll-highlight-grid">
+                <span>Manual Testing</span>
+                <span>Automation (Java / Python)</span>
+                <span>API Testing</span>
+                <span>Real Project Practice</span>
+                <span>Mock Interviews</span>
+                <span>Resume & Job Support</span>
+              </div>
+            </div>
+
+            <div className="enroll-cta">
+              <p>Ready to start your testing career? Contact us to enroll today.</p>
+              <a className="main-btn enroll-contact-btn" href="tel:8985256492">
+                Call to Enroll: 8985256492
+              </a>
+              <button className="main-btn" onClick={() => setPage("success")}>
+                View Success Stories
+              </button>
             </div>
           </div>
         )}
@@ -899,7 +1098,21 @@ function App() {
                   onChange={(e) => setCandidateSearch(e.target.value)}
                 />
               </div>
+
+              <div className="search-field">
+                <label>Admin (to edit): </label>
+                <input
+                  type="password"
+                  placeholder="Enter admin name"
+                  value={viewAdminName}
+                  onChange={(e) => setViewAdminName(e.target.value)}
+                />
+              </div>
             </div>
+
+            {viewAdminName && viewAdminName !== ADMIN_NAME && (
+              <p className="admin-hint">Enter correct admin name to edit booking status.</p>
+            )}
 
             {candidateSearch.trim() && (
               <div className="candidate-stats">
