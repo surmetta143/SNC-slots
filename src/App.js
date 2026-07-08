@@ -1158,7 +1158,7 @@ function App() {
                       </div>
                      <div className="stat-card congratulations">
                         <span className="stat-value">{stats.congratulations}</span>
-                        <span className="stat-label">Congratulations</span>
+                        <span className="stat-label">Congratulations you are selected</span>
                       </div>
                   
                       <div className="stat-card postponed">
