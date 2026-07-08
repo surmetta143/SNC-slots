@@ -410,6 +410,7 @@ function App() {
     { value: "selected", label: "Selected" },
     { value: "cleared", label: "Cleared" },
     { value: "postponed", label: "Postponed" },
+     { value: "Congratulations-Good Job", label: "Congratulations-Good Job" },
   ];
 
   const DETAILS_STATUS_SEPARATOR = " -- ";
@@ -421,6 +422,8 @@ function App() {
     if (text.includes("rescheduled")) return "rescheduled";
     if (text.includes("link not received")) return "link not received";
     if (text.includes("3")) return "cleared";
+    if (text.includes("Congratulations-Good Job")) return "Congratulations-Good Job";
+    
     if (text.includes("postponed")) return "postponed";
     return "scheduled";
   };
@@ -459,6 +462,7 @@ function App() {
       "link not received": { bgColor: "#fecaca", textColor: "#991b1b", fontWeight: "bold" },
       postponed: { bgColor: "#a086860c", textColor: "black", fontWeight: "bold" },
       scheduled: { bgColor: "transparent", textColor: "black", fontWeight: "normal" },
+      Congratulations-Good Job:{ bgColor: "#2291c5", textColor: "black", fontWeight: "bold" },
     };
     return styles[status] || styles.scheduled;
   };
@@ -558,6 +562,8 @@ function App() {
       cleared: 0,
       postponed: 0,
       scheduled: 0,
+      Congratulations-Good Job:0,
+      
     };
 
     candidateBookings.forEach((b) => {
@@ -1150,6 +1156,11 @@ function App() {
                         <span className="stat-value">{stats.cleared}</span>
                         <span className="stat-label">Cleared</span>
                       </div>
+                 <div className="stat-card Congratulations-Good Job">
+                        <span className="stat-value">{stats."Congratulations-Good Job}</span>
+                        <span className="stat-label">Congratulations-Good Job</span>
+                      </div>
+                  
                       <div className="stat-card postponed">
                         <span className="stat-value">{stats.postponed}</span>
                         <span className="stat-label">Postponed</span>
