@@ -422,7 +422,7 @@ function App() {
     if (text.includes("rescheduled")) return "rescheduled";
     if (text.includes("link not received")) return "link not received";
     if (text.includes("3")) return "cleared";
-    if (text.includes("congratulations")) return "Congratulations";
+    if (text.includes("congratulations")) return "Congratulations you are selected";
     
     if (text.includes("postponed")) return "postponed";
     return "scheduled";
