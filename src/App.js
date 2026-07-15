@@ -410,7 +410,7 @@ function App() {
     { value: "scheduled", label: "Scheduled" },
     { value: "attended", label: "Attended" },
     { value: "rescheduled", label: "Rescheduled" },
-    { value: "link not received", label: "Link not received" },
+    { value: "not selected", label: "not selected" },
     { value: "selected", label: "Selected" },
     { value: "cleared", label: "Cleared" },
     { value: "postponed", label: "Postponed" },
@@ -424,7 +424,7 @@ function App() {
     if (text.includes("selected")) return "selected";
     if (text.includes("attended")) return "attended";
     if (text.includes("rescheduled")) return "rescheduled";
-    if (text.includes("link not received")) return "link not received";
+    if (text.includes("not selected")) return "not selected";
     if (text.includes("3")) return "cleared";
     if (text.includes("congratulations")) return "Congratulations you are selected";
     
@@ -463,7 +463,7 @@ function App() {
       cleared: { bgColor: "#2291c5", textColor: "black", fontWeight: "bold" },
       attended: { bgColor: "#facc15", textColor: "black", fontWeight: "bold" },
       rescheduled: { bgColor: "#e9d5ff", textColor: "black", fontWeight: "bold" },
-      "link not received": { bgColor: "#fecaca", textColor: "#991b1b", fontWeight: "bold" },
+      "not selected": { bgColor: "#fecaca", textColor: "#991b1b", fontWeight: "bold" },
       postponed: { bgColor: "#a086860c", textColor: "black", fontWeight: "bold" },
       scheduled: { bgColor: "transparent", textColor: "black", fontWeight: "normal" },
       congratulations:{ bgColor: "#2291c5", textColor: "black", fontWeight: "bold" },
@@ -561,7 +561,7 @@ function App() {
       total: candidateBookings.length,
       attended: 0,
       rescheduled: 0,
-      "link not received": 0,
+      "not selected": 0,
       selected: 0,
       cleared: 0,
       postponed: 0,
@@ -1149,8 +1149,8 @@ function App() {
                         <span className="stat-label">Rescheduled</span>
                       </div>
                       <div className="stat-card link-not-received">
-                        <span className="stat-value">{stats["link not received"]}</span>
-                        <span className="stat-label">Link not received</span>
+                        <span className="stat-value">{stats["not selected"]}</span>
+                        <span className="stat-label">not selected</span>
                       </div>
                       <div className="stat-card selected">
                         <span className="stat-value">{stats.selected}</span>
