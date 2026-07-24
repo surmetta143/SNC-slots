@@ -3,6 +3,7 @@ import "./App.css";
 import { supabase } from "./supabase";
 import { COURSES, COURSE_PRICE } from "./courses";
 
+
 function App() {
   const ADMIN_NAME = "sureshmetta";
   const SUCCESS_STORY_DATE = "2099-12-31";
