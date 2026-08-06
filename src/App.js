@@ -824,7 +824,7 @@ function App() {
 
             <div className="home-cards">
               <div className="home-card">
-                <h3>Book Interview Slot</h3>
+                <h3>Book Interview </h3>
                 <p>Schedule your mock or real interview slot at a convenient time.</p>
                 <button className="main-btn" onClick={() => setPage("book")}>
                   Book Now
@@ -989,7 +989,7 @@ function App() {
         {/* BOOK */}
         {page === "book" && (
           <div className="page-content">
-            <h2>Book Interview Slot</h2>
+            <h2>Book Interview S</h2>
 
             <div className="date-field">
               <label>Select Date: </label>
