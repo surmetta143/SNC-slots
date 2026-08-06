@@ -140,6 +140,14 @@ function App() {
     email: "Shivadhunukunala9133@gmail.com"
   },
      {
+    name: "sagar",
+    email: "sagar@gmail.com"
+  },
+     {
+    name: "poornima",
+    email: "poornima@gmail.com"
+  },
+     {
     name: "guravareddy",
     email: "guravareddy@gmail.com"
   }
