@@ -834,9 +834,9 @@ function App() {
               <div className="home-card">
                 <h3>Book Interview Slot </h3>
                 <p>Schedule your mock or real interview slot at a convenient time.</p>
-                <button className="main-btn" onClick={() => setPage("book")}>
-                  Book Now
-                </button>
+                // <button className="main-btn" onClick={() => setPage("book")}>
+                  // Book Now
+                // </button>
               </div>
               <div className="home-card">
                 <h3>Check Scheduled Interviews</h3>
