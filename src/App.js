@@ -835,7 +835,7 @@ function App() {
                 <h3>Book Interview Slot </h3>
                 <p>Schedule your mock or real interview slot at a convenient time.</p>
                 <button className="main-btn" onClick={() => setPage("book")}>
-                   Book Slot
+                   Book Now
                 </button>
               </div>
               <div className="home-card">
